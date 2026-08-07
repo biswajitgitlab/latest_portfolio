@@ -14,6 +14,7 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
   const [msgEmail, setMsgEmail] = useState('');
   const [msgText, setMsgText] = useState('');
   const [sentSuccess, setSentSuccess] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(PERSONAL_INFO.email);
@@ -27,15 +28,36 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
     setTimeout(() => setCopiedPhone(false), 2000);
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSentSuccess(true);
-    setTimeout(() => {
-      setMsgName('');
-      setMsgEmail('');
-      setMsgText('');
-      setSentSuccess(false);
-    }, 4000);
+    setIsSending(true);
+    try {
+      await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          name: msgName,
+          email: msgEmail,
+          message: msgText,
+          _subject: `New Portfolio Inquiry from ${msgName}`
+        }),
+      });
+      setSentSuccess(true);
+      setTimeout(() => {
+        setMsgName('');
+        setMsgEmail('');
+        setMsgText('');
+        setSentSuccess(false);
+      }, 5000);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try emailing directly.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -235,10 +257,15 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
 
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-rose-500 hover:from-blue-500 hover:to-rose-400 text-white font-semibold text-xs shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    disabled={isSending}
+                    className={`w-full py-3.5 rounded-xl text-white font-semibold text-xs shadow-lg transition-all flex items-center justify-center gap-2 ${
+                      isSending 
+                        ? 'bg-slate-700 cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-blue-600 via-blue-500 to-rose-500 hover:from-blue-500 hover:to-rose-400 cursor-pointer'
+                    }`}
                   >
-                    <Send className="w-4 h-4" />
-                    <span>Send Inquiry to Biswajit</span>
+                    <Send className={`w-4 h-4 ${isSending ? 'animate-pulse' : ''}`} />
+                    <span>{isSending ? 'Sending Inquiry...' : 'Send Inquiry to Biswajit'}</span>
                   </button>
                 </form>
               )}
