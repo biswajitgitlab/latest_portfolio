@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Calendar, Clock, CheckCircle2, User, Mail, MessageSquare, Send } from 'lucide-react';
 
 interface CalendlyModalProps {
@@ -13,6 +13,17 @@ export const CalendlyModal: React.FC<CalendlyModalProps> = ({ isOpen, onClose })
   const [email, setEmail] = useState('');
   const [note, setNote] = useState('');
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

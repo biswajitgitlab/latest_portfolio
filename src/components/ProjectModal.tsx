@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CaseStudy } from '../types';
 import { X, CheckCircle2, ShieldAlert, Cpu, ArrowUpRight, Building2, Calendar, Sparkles } from 'lucide-react';
 
@@ -9,6 +9,17 @@ interface ProjectModalProps {
 }
 
 export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose, onOpenCalendly }) => {
+  useEffect(() => {
+    if (project) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [project]);
+
   if (!project) return null;
 
   return (

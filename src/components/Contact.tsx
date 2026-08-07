@@ -28,38 +28,6 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
     setTimeout(() => setCopiedPhone(false), 2000);
   };
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSending(true);
-    try {
-      await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          name: msgName,
-          email: msgEmail,
-          message: msgText,
-          _subject: `New Portfolio Inquiry from ${msgName}`
-        }),
-      });
-      setSentSuccess(true);
-      setTimeout(() => {
-        setMsgName('');
-        setMsgEmail('');
-        setMsgText('');
-        setSentSuccess(false);
-      }, 5000);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      alert('Failed to send message. Please try emailing directly.');
-    } finally {
-      setIsSending(false);
-    }
-  };
-
   return (
     <section id="contact" className="py-24 bg-[#080c16] relative border-t border-slate-800">
       
@@ -217,12 +185,17 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSendMessage} className="space-y-4">
+                <form action={`https://formsubmit.co/${PERSONAL_INFO.email}`} method="POST" className="space-y-4">
+                  {/* FormSubmit Configuration */}
+                  <input type="hidden" name="_subject" value={`New Portfolio Inquiry from ${msgName}`} />
+                  <input type="hidden" name="_template" value="table" />
+                  
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-mono text-slate-400 block mb-1.5">Your Name *</label>
                       <input
                         type="text"
+                        name="name"
                         required
                         placeholder="John Doe"
                         value={msgName}
@@ -234,6 +207,7 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
                       <label className="text-xs font-mono text-slate-400 block mb-1.5">Your Email *</label>
                       <input
                         type="email"
+                        name="email"
                         required
                         placeholder="john@company.com"
                         value={msgEmail}
@@ -246,6 +220,7 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
                   <div>
                     <label className="text-xs font-mono text-slate-400 block mb-1.5">Your Message *</label>
                     <textarea
+                      name="message"
                       rows={4}
                       required
                       placeholder="Hi Biswajit, we have an automated document processing project we'd like to discuss..."
@@ -257,15 +232,10 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
 
                   <button
                     type="submit"
-                    disabled={isSending}
-                    className={`w-full py-3.5 rounded-xl text-white font-semibold text-xs shadow-lg transition-all flex items-center justify-center gap-2 ${
-                      isSending 
-                        ? 'bg-slate-700 cursor-not-allowed' 
-                        : 'bg-gradient-to-r from-blue-600 via-blue-500 to-rose-500 hover:from-blue-500 hover:to-rose-400 cursor-pointer'
-                    }`}
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-rose-500 hover:from-blue-500 hover:to-rose-400 text-white font-semibold text-xs shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Send className={`w-4 h-4 ${isSending ? 'animate-pulse' : ''}`} />
-                    <span>{isSending ? 'Sending Inquiry...' : 'Send Inquiry to Biswajit'}</span>
+                    <Send className="w-4 h-4" />
+                    <span>Send Inquiry to Biswajit</span>
                   </button>
                 </form>
               )}

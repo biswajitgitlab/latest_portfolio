@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BlogPost } from '../types';
 import { X, Clock, Calendar, Tag, ArrowLeft, BookOpen, Share2, Check } from 'lucide-react';
 
@@ -9,6 +9,17 @@ interface BlogModalProps {
 
 export const BlogModal: React.FC<BlogModalProps> = ({ post, onClose }) => {
   const [copied, setCopied] = React.useState(false);
+
+  useEffect(() => {
+    if (post) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [post]);
 
   if (!post) return null;
 
