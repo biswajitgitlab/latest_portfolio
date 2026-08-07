@@ -16,7 +16,7 @@ export const PERSONAL_INFO = {
   phone: '+91 7863955493',
   linkedin: 'https://linkedin.com/in/biswajit-sarkar-4296b1246',
   github: 'https://github.com/biswajitgitlab',
-  portfolioUrl: 'https://biswajitgitlab.github.io/portfolio',
+  portfolioUrl: 'https://biswajitgitlab.github.io/latest_portfolio',
   status: 'Available for Full Stack AI & Automation Engineering Roles',
   heroBio: 'Full Stack AI Automation Engineer with 2.5+ years of experience building enterprise ERP systems and intelligent workflow automation loops. Specializing in Laravel, CodeIgniter, n8n orchestration, Playwright browser agents, and self-hosted Qwen2.5/PaddleOCR pipelines on AWS ECS.'
 };
