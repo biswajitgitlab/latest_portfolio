@@ -4,10 +4,9 @@ import { Calendar, Menu, X, ArrowUpRight, Code, Terminal, Bot } from 'lucide-rea
 
 interface HeaderProps {
   onOpenCalendly: () => void;
-  onOpenMarkdownModal: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenCalendly, onOpenMarkdownModal }) => {
+export const Header: React.FC<HeaderProps> = ({ onOpenCalendly }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
@@ -100,16 +99,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCalendly, onOpenMarkdownMo
         {/* Action Buttons */}
         <div className="hidden lg:flex items-center gap-3">
           <button
-            onClick={onOpenMarkdownModal}
-            id="header-markdown-btn"
-            className="px-3.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white text-xs font-mono font-medium border border-slate-700/50 transition-all flex items-center gap-1.5 cursor-pointer"
-            title="View exact copy & HTML structure breakdown in Markdown format"
-          >
-            <Code className="w-3.5 h-3.5 text-blue-400" />
-            <span>Markdown Spec</span>
-          </button>
-
-          <button
             onClick={onOpenCalendly}
             id="header-calendly-btn"
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 cursor-pointer hover:scale-105"
@@ -154,16 +143,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCalendly, onOpenMarkdownMo
             </a>
           ))}
           <div className="pt-2 border-t border-slate-800 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenMarkdownModal();
-              }}
-              className="w-full text-left px-3 py-2 rounded-lg text-xs font-mono text-blue-400 bg-slate-900 border border-slate-800 flex items-center gap-2"
-            >
-              <Code className="w-4 h-4" />
-              <span>View Markdown Copy & Structure</span>
-            </button>
+
             <button
               onClick={() => {
                 setMobileMenuOpen(false);

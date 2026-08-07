@@ -9,18 +9,15 @@ import { Blog } from './components/Blog';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { CalendlyModal } from './components/CalendlyModal';
-import { MarkdownOutputModal } from './components/MarkdownOutputModal';
 
 export default function App() {
   const [calendlyOpen, setCalendlyOpen] = useState(false);
-  const [markdownModalOpen, setMarkdownModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#080c16] text-slate-100 font-sans antialiased selection:bg-blue-500 selection:text-white">
       {/* Fixed Sticky Header */}
       <Header
         onOpenCalendly={() => setCalendlyOpen(true)}
-        onOpenMarkdownModal={() => setMarkdownModalOpen(true)}
       />
 
       {/* Main Content Sections */}
@@ -41,11 +38,6 @@ export default function App() {
       <CalendlyModal
         isOpen={calendlyOpen}
         onClose={() => setCalendlyOpen(false)}
-      />
-
-      <MarkdownOutputModal
-        isOpen={markdownModalOpen}
-        onClose={() => setMarkdownModalOpen(false)}
       />
     </div>
   );
