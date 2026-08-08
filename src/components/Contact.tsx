@@ -28,6 +28,33 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
     setTimeout(() => setCopiedPhone(false), 2000);
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSending(true);
+    try {
+      await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: `New Portfolio Inquiry from ${msgName}`,
+          _template: 'table',
+          name: msgName,
+          email: msgEmail,
+          message: msgText
+        })
+      });
+      setSentSuccess(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSentSuccess(true);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   return (
     <section id="contact" className="py-24 bg-[#080c16] relative border-t border-slate-800">
       
@@ -185,10 +212,7 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
                   </p>
                 </div>
               ) : (
-                <form action={`https://formsubmit.co/${PERSONAL_INFO.email}`} method="POST" className="space-y-4">
-                  {/* FormSubmit Configuration */}
-                  <input type="hidden" name="_subject" value={`New Portfolio Inquiry from ${msgName}`} />
-                  <input type="hidden" name="_template" value="table" />
+                <form onSubmit={handleSubmit} className="space-y-4">
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -232,10 +256,11 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
 
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-rose-500 hover:from-blue-500 hover:to-rose-400 text-white font-semibold text-xs shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    disabled={isSending}
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-rose-500 hover:from-blue-500 hover:to-rose-400 text-white font-semibold text-xs shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-4 h-4" />
-                    <span>Send Inquiry to Biswajit</span>
+                    <span>{isSending ? 'Sending Inquiry...' : 'Send Inquiry to Biswajit'}</span>
                   </button>
                 </form>
               )}

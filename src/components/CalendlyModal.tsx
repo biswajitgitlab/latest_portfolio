@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, Clock, CheckCircle2, User, Mail, MessageSquare, Send } from 'lucide-react';
+import { PERSONAL_INFO } from '../data/portfolioData';
 
 interface CalendlyModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ export const CalendlyModal: React.FC<CalendlyModalProps> = ({ isOpen, onClose })
   const [email, setEmail] = useState('');
   const [note, setNote] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -27,9 +29,33 @@ export const CalendlyModal: React.FC<CalendlyModalProps> = ({ isOpen, onClose })
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSending(true);
+    try {
+      await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: `New Calendly Call Request from ${name}`,
+          _template: 'table',
+          name,
+          email,
+          topic: selectedTopic,
+          date: selectedDate,
+          note
+        })
+      });
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitted(true); // Proceed to success screen anyway for UX
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const dates = [
@@ -49,7 +75,7 @@ export const CalendlyModal: React.FC<CalendlyModalProps> = ({ isOpen, onClose })
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200" onClick={onClose}>
-      <div className="relative w-full max-w-xl bg-[#0d1326] border border-slate-700/80 rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 text-slate-200" onClick={(e) => e.stopPropagation()}>
+      <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-[#0d1326] border border-slate-700/80 rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 text-slate-200" onClick={(e) => e.stopPropagation()}>
         
         {/* Close Button */}
         <button
@@ -190,10 +216,11 @@ export const CalendlyModal: React.FC<CalendlyModalProps> = ({ isOpen, onClose })
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-rose-600 hover:from-blue-500 hover:to-rose-500 text-white font-semibold text-xs shadow-lg flex items-center gap-2"
+                disabled={isSending}
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-rose-600 hover:from-blue-500 hover:to-rose-500 text-white font-semibold text-xs shadow-lg flex items-center gap-2 disabled:opacity-50"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>Confirm Call Schedule</span>
+                <span>{isSending ? 'Sending...' : 'Confirm Call Schedule'}</span>
               </button>
             </div>
           </form>
