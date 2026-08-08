@@ -28,28 +28,18 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
     setTimeout(() => setCopiedPhone(false), 2000);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSending(true);
+    
     try {
-      await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          _subject: `New Portfolio Inquiry from ${msgName}`,
-          _template: 'table',
-          name: msgName,
-          email: msgEmail,
-          message: msgText
-        })
-      });
+      const subject = encodeURIComponent(`New Portfolio Inquiry from ${msgName}`);
+      const body = encodeURIComponent(`Name: ${msgName}\nEmail: ${msgEmail}\n\nMessage:\n${msgText}`);
+      window.location.href = `mailto:${PERSONAL_INFO.email}?subject=${subject}&body=${body}`;
+      
       setSentSuccess(true);
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setSentSuccess(true);
+      console.error('Error opening email client:', error);
     } finally {
       setIsSending(false);
     }
