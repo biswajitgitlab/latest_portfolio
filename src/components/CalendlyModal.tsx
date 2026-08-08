@@ -29,29 +29,17 @@ export const CalendlyModal: React.FC<CalendlyModalProps> = ({ isOpen, onClose })
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSending(true);
+    
     try {
-      await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          _subject: `New Calendly Call Request from ${name}`,
-          _template: 'table',
-          name,
-          email,
-          topic: selectedTopic,
-          date: selectedDate,
-          note
-        })
-      });
+      const text = encodeURIComponent(`*New Calendly Call Request*\n\n*Name:* ${name}\n*Email:* ${email}\n*Topic:* ${selectedTopic}\n*Date:* ${selectedDate}\n\n*Note:*\n${note || 'N/A'}`);
+      window.open(`https://wa.me/917863955493?text=${text}`, '_blank');
+      
       setSubmitted(true);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error opening WhatsApp:', error);
       setSubmitted(true); // Proceed to success screen anyway for UX
     } finally {
       setIsSending(false);
