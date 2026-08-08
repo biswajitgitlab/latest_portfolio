@@ -33,13 +33,12 @@ export const Contact: React.FC<ContactProps> = ({ onOpenCalendly }) => {
     setIsSending(true);
     
     try {
-      const subject = encodeURIComponent(`New Portfolio Inquiry from ${msgName}`);
-      const body = encodeURIComponent(`Name: ${msgName}\nEmail: ${msgEmail}\n\nMessage:\n${msgText}`);
-      window.location.href = `mailto:${PERSONAL_INFO.email}?subject=${subject}&body=${body}`;
+      const text = encodeURIComponent(`*New Portfolio Inquiry*\n\n*Name:* ${msgName}\n*Email:* ${msgEmail}\n\n*Message:*\n${msgText}`);
+      window.open(`https://wa.me/917863955493?text=${text}`, '_blank');
       
       setSentSuccess(true);
     } catch (error) {
-      console.error('Error opening email client:', error);
+      console.error('Error opening WhatsApp:', error);
     } finally {
       setIsSending(false);
     }
